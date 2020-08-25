@@ -1,0 +1,149 @@
+sudo -s
+-------
+apt install -y isc-dhcp-server tftpd-hpa net-tools targetcli-fb gedit
+---------------------------------------------------------------------------
+mkdir /var/lib/iscsi
+---------------------------------------------------------------------------
+ifconfig -a
+# # #   Look for the interface   # # #
+# # #   My is enp0s3   # # #
+
+gedit /etc/default/isc-dhcp-server
+
+INTERFACESv4="enp0s3"
+---------------------------------------------------------------------------
+mv /etc/dhcp/dhcpd.conf{,_orig}
+gedit /etc/dhcp/dhcpd.conf
+
+option space PXE;
+option PXE.mtftp-ip    code 1 = ip-address;
+option PXE.mtftp-cport code 2 = unsigned integer 16;
+option PXE.mtftp-sport code 3 = unsigned integer 16;
+option PXE.mtftp-tmout code 4 = unsigned integer 8;
+option PXE.mtftp-delay code 5 = unsigned integer 8;
+option arch code 93 = unsigned integer 16; # RFC4578
+
+use-host-decl-names on;
+ddns-update-style interim;
+ignore client-updates;
+next-server 192.168.0.150;
+authoritative;
+
+
+subnet 192.168.0.0 netmask 255.255.255.0 {
+    option subnet-mask 255.255.255.0;
+    range dynamic-bootp 192.168.0.151 192.168.0.249;
+    default-lease-time 300;
+    max-lease-time 500;
+    option domain-name-servers 192.168.0.1;
+    option routers 192.168.0.1;
+ 
+    class "UEFI-32-1" {
+    match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00006";
+    filename "i386-efi/ipxe.efi";
+    }
+
+    class "UEFI-32-2" {
+    match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00002";
+    filename "i386-efi/ipxe.efi";
+    }
+
+    class "UEFI-64-1" {
+    match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00007";
+    filename "ipxe.efi";
+    }
+
+    class "UEFI-64-2" {
+    match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00008";
+    filename "ipxe.efi";
+    }
+
+    class "UEFI-64-3" {
+    match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00009";
+    filename "ipxe.efi";
+    }
+
+    class "Legacy" {
+    match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00000";
+    filename "ipxe.kkpxe";
+    }
+
+}
+---------------------------------------------------------------------------
+service isc-dhcp-server restart
+
+
+# # #   D U M M Y   I N T E R F A C E   # # #
+# # #   Without it i can't add my static ip to Targetcli   # # #
+# # #   It can't add ip address, which it don't see   # # #
+
+---------------------------ip link Ubuntu 16.04-----------------------------------
+gedit /etc/rc.local
+
+ip link add iscsidummy type dummy
+---
+gedit /etc/modules
+
+dummy
+---
+gedit /etc/network/interfaces
+
+auto iscsidummy
+iface iscsidummy inet static
+address your.static.ip.address
+netmask 255.255.240.0
+----------------------------netplan Ubuntu 18.10-----------------------------------
+gedit /etc/netplan/01-network-manager-all.yaml
+
+  ethernets:
+    enp0s3:
+      dhcp4: true
+  bridges:
+    iscsi0:
+      interfaces: []
+      addresses: [your.static.ip.address/24]
+---
+sudo netplan apply
+---------------------------------------------------------------------------
+reboot
+
+
+# # #   Look for your new interface   # # #
+ifconfig -a
+---------------------------------------------------------------------------
+# # #   Create iSCSI   # # #
+targetcli
+clearconfig confirm=true
+cd /backstores/fileio
+create install-image /var/lib/iscsi/install-image.img 5G
+cd /iscsi
+create iqn.2018-06.io.github.sebaxakerhtc:install-image
+cd iqn.2018-06.io.github.sebaxakerhtc:install-image/tpg1/luns
+create /backstores/fileio/install-image
+cd /iscsi/iqn.2018-06.io.github.sebaxakerhtc:install-image/tpg1/portals
+delete 0.0.0.0 3260
+create 192.168.0.150 3260
+create your.static.ip.address 3260
+cd /iscsi/iqn.2018-06.io.github.sebaxakerhtc:install-image/tpg1/acls
+create iqn.2018-06.io.github.sebaxakerhtciSCSI-name-of-client
+cd /iscsi/iqn.2018-06.io.github.sebaxakerhtc:install-image/tpg1
+set parameter AuthMethod=None
+set attribute authentication=0 demo_mode_write_protect=0
+exit
+y
+
+# # #   O P E N   P O R T S   # # #
+
+sudo ufw allow from any to any port 3260,3261 proto tcp
+sudo ufw allow from any to any port 3260,3261 proto udp
+
+# # #   R E M O V E   A U T H   # # #
+
+********/tpg1
+set parameter AuthMethod=None
+set attribute authentication=0 demo_mode_write_protect=0 generate_node_acls=1 cache_dynamic_acls=1
+
+# # #   ON or OFF "Write Protection"   # # #
+
+/etc/rtslib-fb-target/saveconfig.json
+ write_protect: true
