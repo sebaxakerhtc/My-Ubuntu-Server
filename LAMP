@@ -26,6 +26,7 @@ sudo gedit /var/www/html/sebaxakerhtc.github.io/public_html/index.html
 
 sudo gedit /etc/apache2/sites-available/sebaxakerhtc.github.io.conf
 
+---------------------------------------------------------------------
 <VirtualHost *:80>
 ServerName sebaxakerhtc.github.io
 ServerAlias www.sebaxakerhtc.github.io
@@ -43,6 +44,7 @@ DocumentRoot /var/www/html/sebaxakerhtc.github.io/public_html
 ErrorLog ${APACHE_LOG_DIR}/error.log
 CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
+---------------------------------------------------------------------
 
 sudo a2ensite sebaxakerhtc.github.io.conf
 
