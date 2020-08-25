@@ -1,0 +1,94 @@
+---------------------------------------------------------------------
+------------------------  APACHE 2  ---------------------------------
+---------------------------------------------------------------------
+sudo apt install -y gedit apache2
+
+sudo systemctl enable apache2
+
+sudo systemctl start apache2
+
+sudo mkdir /var/www/html/sebaxakerhtc.pcsbs
+
+sudo mkdir /var/www/html/sebaxakerhtc.pcsbs/public_html
+
+sudo chmod -R 755 /var/www/html
+
+sudo gedit /var/www/html/sebaxakerhtc.pcsbs/public_html/index.html
+
+<html>
+<head>
+<title>It's just a Test, but...</title>
+</head>
+<body>
+<h1>IIIhhaa! Virtual host is working!</h1>
+</body>
+</html>
+
+sudo gedit /etc/apache2/sites-available/sebaxakerhtc.pcsbs.conf
+
+<VirtualHost *:80>
+ServerName sebaxakerhtc.pcsbs
+ServerAlias www.sebaxakerhtc.pcsbs
+ServerAdmin sebaxakerhtc@localhost
+DocumentRoot /var/www/html/sebaxakerhtc.pcsbs/public_html
+ErrorLog ${APACHE_LOG_DIR}/error.log
+CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+<VirtualHost *:443>
+ServerName sebaxakerhtc.pcsbs
+ServerAlias www.sebaxakerhtc.pcsbs
+ServerAdmin sebaxakerhtc@localhost
+DocumentRoot /var/www/html/sebaxakerhtc.pcsbs/public_html
+ErrorLog ${APACHE_LOG_DIR}/error.log
+CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+sudo a2ensite sebaxakerhtc.pcsbs.conf
+
+sudo systemctl restart apache2
+
+sudo gedit /etc/hosts
+
+127.0.0.1	sebaxakerhtc.pcsbs
+
+sudo a2enmod ssl
+
+sudo a2ensite default-ssl
+
+sudo systemctl restart apache2
+
+---------------------------------------------------------------------
+--------------------------  PHP  ------------------------------------
+---------------------------------------------------------------------
+
+sudo apt install -y php
+
+sudo gedit /var/www/html/sebaxakerhtc.pcsbs/public_html/index.php
+
+<?php phpinfo(); ?>
+
+sudo systemctl restart apache2
+
+sudo gedit /etc/php/7.2/apache2/php.ini
+
+display_errors = On
+
+---------------------------------------------------------------------
+--------------------------  SQL  ------------------------------------
+---------------------------------------------------------------------
+
+sudo apt install -y mariadb-server mariadb-client
+
+sudo mysql_secure_installation
+
+---------------------------------------------------------------------
+-----------------------  phpmyadmin  --------------------------------
+---------------------------------------------------------------------
+
+sudo apt install -y phpmyadmin
+
+sudo -i
+echo "update user set plugin='' where User='root'; flush privileges;" | mysql -u root -p mysql
+
+sudo ln -s /usr/share/phpmyadmin /var/www/html/
