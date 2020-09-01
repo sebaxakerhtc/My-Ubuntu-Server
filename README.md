@@ -12,4 +12,4 @@
 <p>Server ip 192.168.150
 <p>Server DHCP 192.168.0.151 - 192.168.0.199
 <p>
-<p>Yes, it's far far from ideal... But it was my real server.
+<p>Yes, it's far far from ideal... But it was my first real server.
