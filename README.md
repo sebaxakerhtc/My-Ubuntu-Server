@@ -1,6 +1,6 @@
 # My-Ubuntu-Server
 
-<p>All-in-one server with Apache2, MariaDB(SQL), PHP, TFTP, DHCP, Targetcli(iSCSI), PXE, iPXE
+<p>All-in-one server with Apache2, MariaDB(SQL), PHP, TFTP, DHCP, SAMBA, Targetcli(iSCSI), PXE, iPXE
 <p>
 <p>It's just an archive commands, i used to make my server, when was released Ubuntu 18.04.
 <p>I found them in my archived folder.
