@@ -1,0 +1,31 @@
+# Read for all but write for me
+
+# install samba
+sudo apt install samba
+
+# backing up old config
+sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.backup
+
+# create new config
+sudo nano /etc/samba/smb.conf
+
+<p> [global]
+<p> workgroup = WORKGROUP
+<p> server string = %h server (Samba, Ubuntu)
+<p> map to guest = bad user
+<p> usershare allow guests = yes
+<p> 
+<p> [pcserviceburgas.com]
+<p> path = /raid10/files
+<p> browsable = yes
+<p> writable = yes
+<p> guest ok = yes
+
+# create folder
+sudo mkdir -p /raid10/files
+
+# give it to me ;)
+sudo chown -R sebaxakerhtc /raid10/files
+
+# restart services
+sudo systemctl restart smbd nmbd
