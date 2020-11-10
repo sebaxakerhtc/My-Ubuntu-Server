@@ -14,12 +14,16 @@ workgroup = WORKGROUP
 server string = %h server (Samba, Ubuntu)
 map to guest = bad user
 usershare allow guests = yes
+# allow run *.exe files from SMB
+acl allow execute always = True
 
 [pcserviceburgas.com]
 path = /raid10/files
 browsable = yes
 writable = yes
 guest ok = yes
+# hide folder
+veto files = hidenfoldername
 
 # create folder
 sudo mkdir -p /raid10/files
