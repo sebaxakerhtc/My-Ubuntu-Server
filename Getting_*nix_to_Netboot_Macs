@@ -1,0 +1,80 @@
+class "Apple-Intel-Netboot" {
+	# Limit this class to only Intel Apple machines
+	match if substring (option vendor-class-identifier, 0, 14) = "AAPLBSDPC/i386";
+	option dhcp-parameter-request-list 1,3,17,43,60; # Send these options to the client (possibly forcing it, if the client didn't request it)
+							# From: http://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xml
+							# 1 - Subnet Mask
+							# 3 - Router
+							# 17 - Root Path
+							# 43 - Vendor Specific
+							# 60 - Class ID
+
+	if (option dhcp-message-type = 8) {
+		# on DHCPInform Messages, Us/Our (Server), Them (Client)
+		option vendor-class-identifier "AAPLBSDPC"; # Let Them know we're responding with Apple BSDP Information
+		if (substring(option vendor-encapsulated-options, 0, 3) = 01:01:01) {
+			log(info, "BSDP_LIST");
+			# BSDP List
+			# Let Them know this is the let, what server, the server's priority, what Our default image is, and provide the image list
+			option vendor-encapsulated-options
+				01:01:01:			# Start BSDP Inform/List Option 1 (01:), Length 1 (01:), Message Type List(1) (01:)
+				03:04:				# BSDP option code 3 (length 04) -- Server Identifier
+					0A:00:03:02:		# Server IP (10.0.3.2), Dec->Hex
+				04:02:				# BSDP option code 4 (length 02) -- Server Priority
+					80:00:			# Priority (32768) Dec->Hex
+				07:04:				# BSDP option code 7 (length 04) -- Default Image ID
+					81:00:00:89:		#     Image ID - (137) Dec->Hex
+								# This is what is picked as Default when you only hold down N on the client
+								#
+								# 81 breaks into: 0 or 8 for Non-Install (NetBoot) set or Install (NetInstal) set,
+								# Most, including DeployStudio default to NetInstall set.
+								# Then 0 for Mac OS 9, 1 for Mac OS X (Client)
+								# 2 for OS X Server, and 3 for Hardware Diagnostics
+								# 4- through 127 (x4:00-xf:ff) reversed for future use
+								# And the last two are for the Image ID (Dec->Hex)
+								# IDs 1-4095 (00:01-0F:FF) are for Server-Specific Images (You will probably want an ID in this range)
+								# IDs 4096-65535 (10:00-FF:FF) Are "Globally-Unique", Multiple servers can present this same ID
+								# and the client will only see one image, and pick a random(?) server to talk to.
+								#
+				09:				# BSDP option code 9 -- Boot image list
+					2A:			# Length - =5*<numofimages>+<sumofallimagenames>, eg =5*2+(23+9), =10+32, =42, Dec->Hex =2A
+								# This only appears once in the pacakge, no matter how many images you have below
+						81:00:00:89:	# Image ID (137) -- dec->hex, see above (Default Image ID) for how to forumlate the full ID
+							09:44:6f:45:2d:49:6d:61:67:65:	# Length(09):Name 'DoE-Image' ascii->hex
+						81:00:00:8A:				# Image ID -- 138
+							17:44:53:52:2d:4e:42:30:31:30:31:32:30:31:32:2d:30:35:31:32:32:30:31:32; # Length(Hex:17,Dec:23):Name 
+																# Name: DSR-NB01012012-05122012
+		} elsif (substring(option vendor-encapsulated-options, 0, 3) = 01:01:02) {
+			log(info, "BSDP_SELECT");
+			# BSDP Select, This is the client selecting which image they want to boot from
+			# Here we basically do if statements to catch what image is referenced
+			# Since we MIGHT be clustered, Check to see if we're the server being asked, this is BSDP Option 3 (Length 04)
+			if (substring(option vendor-encapsulated-options, 9, 4) = 0A:00:03:02) { # Match to IP: 10.0.3.2, same as above. You'll want to change this
+				log(info, "BSDP_SELECT-Responding, Client is talking to us."); # Log we're being talked to
+				if (substring(option vendor-encapsulated-options, 15, 4) = 81:00:00:89) { # Catch Image ID 81:00:00:89
+					log(info, "BSDP_SELECT-Image: 137:DOE-Image"); # This isn't _needed_, but is nice for debugging/knowing
+					# Insert stuff needed to boot here
+					filename "/osx/i386/booter";
+					next-server 10.25.64.32;
+					option root-path = "http://10.25.64.32/build.sparseimage";
+				} elsif (substring(option vendor-encapsulated-options, 15, 4) = 81:00:00:8A) { # Catch Image ID 81:00:00:8A
+					log(info, "BSDP_SELECT-Image: DSR-NB01012012-05122012");
+					# Insert stuff here needed for boot
+					# This example is from the FOG Project: http://fogproject.org/wiki/index.php?title=How_to_get_Macintosh%27s_Netboot_working_with_your_FOG_server
+					filename "macnbi-i386/booter";
+					#Replace 192.168.1.1 with the server's actual IP address.
+					#Need clarification if NetRestore works for both Intel and PowerPC
+					#For DeployStudio, either copy DeployStudioRuntime.sparseimage to /nbi, or use nfs share to connect to deploy studio server
+					#option root-path "nfs:<deploystudio_ip>:/Volumes/<volume_label>/Library/NetBoot/NetBootSP0:<runtime_folder>/DeployStudioRuntime.sparseimage";
+      					#option root-path "nfs:192.168.1.1:/nbi:DeployStudioRuntime.sparseimage";
+					option root-path "nfs:192.168.1.1:/nbi:NetInstall-Restore.dmg";
+					next-server 192.168.1.1;
+				} else {
+					log(info,"BSDP_SELECT-ERROR: Client responded with an image we don't have a match for! -- (Image added to list, but not in select catch?)");
+				} 	# End Image Selection Response
+			} else {
+				log(info,"BSDP_SELECT-Ignoring, Client is talking to another server--We're not worthy!"); # Log that we are not worthy of the client's time
+			} 		# End Server Check
+		} 			# End BSDP Options Check
+	} 				# End DHCPInform Messages
+} 					# End Class
