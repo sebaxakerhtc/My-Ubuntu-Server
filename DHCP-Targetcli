@@ -125,7 +125,7 @@ delete 0.0.0.0 3260
 create 192.168.0.150 3260
 create your.static.ip.address 3260
 cd /iscsi/iqn.2018-06.io.github.sebaxakerhtc:install-image/tpg1/acls
-create iqn.2018-06.io.github.sebaxakerhtciSCSI-name-of-client
+create iqn.2018-06.io.github.sebaxakerhtc:iSCSI-name-of-client
 cd /iscsi/iqn.2018-06.io.github.sebaxakerhtc:install-image/tpg1
 set parameter AuthMethod=None
 set attribute authentication=0 demo_mode_write_protect=0
