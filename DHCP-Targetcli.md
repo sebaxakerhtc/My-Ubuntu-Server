@@ -23,9 +23,12 @@ ip address show
 ```
 nano /etc/default/isc-dhcp-server
 ```
-----------------------
+<p> Insert your interface
+    
+```
 INTERFACESv4="enp0s3"
-----------------------
+```
+
 <p> Backing up original dhcpd.conf and insert code to new one
     
 ```
