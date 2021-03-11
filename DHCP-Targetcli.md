@@ -1,20 +1,40 @@
+<p> To not add sudo to many comands...
+    
+```
 sudo -s
--------
-apt install -y isc-dhcp-server tftpd-hpa net-tools targetcli-fb gedit
----------------------------------------------------------------------------
+```
+<p> Install items
+    
+```
+apt install -y isc-dhcp-server tftpd-hpa targetcli-fb gedit
+```
+<p> Create dir for iSCSI images
+    
+```
 mkdir /var/lib/iscsi
----------------------------------------------------------------------------
-ifconfig -a
-# # #   Look for the interface   # # #
-# # #   My is enp0s3   # # #
-
-gedit /etc/default/isc-dhcp-server
-
+```
+<p> Look for the interface
+    
+```
+ip address show
+```
+<p> Edit interface for DHCP
+    
+```
+nano /etc/default/isc-dhcp-server
+```
+----------------------
 INTERFACESv4="enp0s3"
----------------------------------------------------------------------------
+----------------------
+<p> Backing up original dhcpd.conf and insert code to new one
+    
+```
 mv /etc/dhcp/dhcpd.conf{,_orig}
-gedit /etc/dhcp/dhcpd.conf
-
+nano /etc/dhcp/dhcpd.conf
+```
+<p> Code to insert
+    
+```
 option space PXE;
 option PXE.mtftp-ip    code 1 = ip-address;
 option PXE.mtftp-cport code 2 = unsigned integer 16;
@@ -69,32 +89,22 @@ subnet 192.168.0.0 netmask 255.255.255.0 {
     }
 
 }
----------------------------------------------------------------------------
+```
+<p> Restart DHCP server
+    
+```
 service isc-dhcp-server restart
+```
+<p> Dummy interface for iSCSI to work from all the world
+<p> Without it i can't add my static ip to Targetcli
+<p> It can't add ip address, which it don't see
 
-
-# # #   D U M M Y   I N T E R F A C E   # # #
-# # #   Without it i can't add my static ip to Targetcli   # # #
-# # #   It can't add ip address, which it don't see   # # #
-
----------------------------ip link Ubuntu 16.04-----------------------------------
-gedit /etc/rc.local
-
-ip link add iscsidummy type dummy
----
-gedit /etc/modules
-
-dummy
----
-gedit /etc/network/interfaces
-
-auto iscsidummy
-iface iscsidummy inet static
-address your.static.ip.address
-netmask 255.255.240.0
-----------------------------netplan Ubuntu 18.10-----------------------------------
-gedit /etc/netplan/01-network-manager-all.yaml
-
+```
+nano /etc/netplan/01-network-manager-all.yaml
+```
+<p> Code to insert
+    
+```
   ethernets:
     enp0s3:
       dhcp4: true
@@ -102,16 +112,26 @@ gedit /etc/netplan/01-network-manager-all.yaml
     iscsi0:
       interfaces: []
       addresses: [your.static.ip.address/24]
----
+```
+<p> Restart netplan
+    
+```
 sudo netplan apply
----------------------------------------------------------------------------
-reboot
+```
+<p> reboot
 
 
-# # #   Look for your new interface   # # #
-ifconfig -a
----------------------------------------------------------------------------
-# # #   Create iSCSI   # # #
+<p> Look for your new interface
+
+```
+ip address show
+```
+
+
+<p> Create iSCSI
+<p> Sample code
+    
+```
 targetcli
 clearconfig confirm=true
 cd /backstores/fileio
@@ -131,19 +151,24 @@ set parameter AuthMethod=None
 set attribute authentication=0 demo_mode_write_protect=0
 exit
 y
+```
 
-# # #   O P E N   P O R T S   # # #
-
+<p> Open ports
+```
 sudo ufw allow from any to any port 3260,3261 proto tcp
 sudo ufw allow from any to any port 3260,3261 proto udp
+```
+<p> Remove auth
 
-# # #   R E M O V E   A U T H   # # #
-
+```
 ********/tpg1
 set parameter AuthMethod=None
 set attribute authentication=0 demo_mode_write_protect=0 generate_node_acls=1 cache_dynamic_acls=1
-
-# # #   ON or OFF "Write Protection"   # # #
-
+```
+<p> ON or OFF "Write Protection"
+    
+```
 /etc/rtslib-fb-target/saveconfig.json
- write_protect: true
+```
+<p> look for:
+write_protect: true or false
