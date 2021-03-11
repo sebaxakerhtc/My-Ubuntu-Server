@@ -121,15 +121,14 @@ nano /etc/netplan/01-network-manager-all.yaml
 ```
 sudo netplan apply
 ```
-<p> reboot
-
-
+# reboot
+    
+    
 <p> Look for your new interface
 
 ```
 ip address show
 ```
-
 
 <p> Create iSCSI
 <p> Sample code
@@ -157,6 +156,7 @@ y
 ```
 
 <p> Open ports
+    
 ```
 sudo ufw allow from any to any port 3260,3261 proto tcp
 sudo ufw allow from any to any port 3260,3261 proto udp
