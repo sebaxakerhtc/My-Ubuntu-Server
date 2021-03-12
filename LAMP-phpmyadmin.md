@@ -62,7 +62,7 @@ sudo a2ensite sebaxakerhtc.github.io.conf
 
 sudo systemctl restart apache2
 
-sudo gedit /etc/hosts
+sudo nano /etc/hosts
 ```
 <p> Insert
 
@@ -85,13 +85,13 @@ sudo systemctl restart apache2
 ```
 sudo apt install -y php
 
-sudo gedit /var/www/html/sebaxakerhtc.github.io/public_html/index.php
+sudo nano /var/www/html/sebaxakerhtc.github.io/public_html/index.php
 
 <?php phpinfo(); ?>
 
 sudo systemctl restart apache2
 
-sudo gedit /etc/php/7.2/apache2/php.ini
+sudo nano /etc/php/7.2/apache2/php.ini
 
 display_errors = On
 ```
