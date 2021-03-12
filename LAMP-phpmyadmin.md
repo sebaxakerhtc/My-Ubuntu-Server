@@ -3,7 +3,7 @@
 <p> Install apache2 and create folders
   
 ```  
-sudo apt install -y gedit apache2
+sudo apt install -y nano apache2
 
 sudo systemctl enable apache2
 
