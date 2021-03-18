@@ -1,4 +1,4 @@
-# I was in trouble with one joomla site after moving ot from another server. The solution is easy, but very dificult to find it. It works.
+# I was in trouble with one joomla site after moving it from one server to another. The solution is easy, but very dificult to find it. It works.
 <p> 
 <p> This commands totaly solve my problem
 
