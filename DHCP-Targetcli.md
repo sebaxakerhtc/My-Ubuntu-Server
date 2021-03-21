@@ -122,8 +122,6 @@ network:
 ```
 sudo netplan apply
 ```
-# reboot
-    
     
 <p> Look for your new interface
 
@@ -131,7 +129,7 @@ sudo netplan apply
 ip address show
 ```
 
-<p> Create iSCSI
+# Create iSCSI
 <p> Sample code
     
 ```
