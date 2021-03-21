@@ -6,7 +6,7 @@ sudo -s
 <p> Install items
     
 ```
-apt install -y isc-dhcp-server tftpd-hpa targetcli-fb gedit
+apt install -y isc-dhcp-server tftpd-hpa targetcli-fb
 ```
 <p> Create dir for iSCSI images
     
