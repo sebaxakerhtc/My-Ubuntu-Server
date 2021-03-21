@@ -108,6 +108,7 @@ nano /etc/netplan/01-network-manager-all.yaml
 <p> Code to insert
     
 ```
+network:
   ethernets:
     enp0s3:
       dhcp4: true
