@@ -8,6 +8,11 @@ sudo -s
 ```
 apt install -y isc-dhcp-server tftpd-hpa targetcli-fb
 ```
+<p> Enable targetcli service to restore config after reboot
+    
+```
+sudo systemctl enable rtslib-fb-targetctl
+```
 <p> Create dir for iSCSI images
     
 ```
