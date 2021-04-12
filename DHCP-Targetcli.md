@@ -95,6 +95,23 @@ subnet 192.168.0.0 netmask 255.255.255.0 {
     match if substring(option vendor-class-identifier, 0, 20) = "PXEClient:Arch:00000";
     filename "ipxe.kkpxe";
     }
+    
+    class "Apple-Intel-Netboot" {
+    match if substring (option vendor-class-identifier, 0, 14) = "AAPLBSDPC/i386";
+    option dhcp-parameter-request-list 1,3,17,43,60;
+    if (option dhcp-message-type = 8) {
+        option vendor-class-identifier "AAPLBSDPC";
+        if (substring(option vendor-encapsulated-options, 0, 3) = 01:01:01) {
+            # BSDP List
+            option vendor-encapsulated-options 01:01:01:04:02:80:00:07:04:81:00:05:2a:09:0D:81:00:05:2a:08:50:43:53:42:53;
+        }
+        elsif (substring(option vendor-encapsulated-options, 0, 3) = 01:01:02) {
+            # BSDP Select
+            option vendor-encapsulated-options 01:01:02:08:04:81:00:05:2a:82:0a:4e:65:74:42:6f:6f:74:30:30:31;
+            filename "ipxe.efi";
+        }
+    }
+    }
 
 }
 ```
