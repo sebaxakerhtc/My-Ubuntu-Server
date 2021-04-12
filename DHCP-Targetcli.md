@@ -103,7 +103,7 @@ subnet 192.168.0.0 netmask 255.255.255.0 {
         option vendor-class-identifier "AAPLBSDPC";
         if (substring(option vendor-encapsulated-options, 0, 3) = 01:01:01) {
             # BSDP List
-            option vendor-encapsulated-options 01:01:01:04:02:80:00:07:04:81:00:05:2a:09:0D:81:00:05:2a:08:50:43:53:42:53;
+            option vendor-encapsulated-options 01:01:01:04:02:80:00:07:04:81:00:05:2a:09:0D:81:00:05:2a:08:50:43:53:42:53:2d:42:47;
         }
         elsif (substring(option vendor-encapsulated-options, 0, 3) = 01:01:02) {
             # BSDP Select
