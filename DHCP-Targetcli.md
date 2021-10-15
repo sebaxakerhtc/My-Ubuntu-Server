@@ -37,7 +37,7 @@ INTERFACESv4="enp0s3"
 <p> Backing up original dhcpd.conf and insert code to new one
     
 ```
-mv /etc/dhcp/dhcpd.conf{,_orig}
+mv /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf{,_orig}
 nano /etc/dhcp/dhcpd.conf
 ```
 <p> Code to insert
