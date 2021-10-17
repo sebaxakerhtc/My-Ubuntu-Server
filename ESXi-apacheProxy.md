@@ -45,3 +45,16 @@ Include /etc/letsencrypt/options-ssl-apache.conf
 ```
 a2enmod proxy_wstunnel
 ```
+
+<p> 
+<p> Copy certs to vmware
+  
+```
+ssh {USER}@{VMWARE-ADDRESS} "cp /etc/vmware/ssl/castore.pem /etc/vmware/ssl/castore.pem.bak"
+ssh {USER}@{VMWARE-ADDRESS} "cp /etc/vmware/ssl/rui.crt /etc/vmware/ssl/rui.crt.bak"
+ssh {USER}@{VMWARE-ADDRESS} "cp /etc/vmware/ssl/rui.key /etc/vmware/ssl/rui.key.bak"
+sudo scp /etc/letsencrypt/live/{CERTS-DIR}/fullchain.pem {USER}@{VMWARE-ADDRESS}:/etc/vmware/ssl/castore.pem
+sudo scp /etc/letsencrypt/live/{CERTS-DIR}/cert.pem {USER}@{VMWARE-ADDRESS}:/etc/vmware/ssl/rui.crt
+sudo scp /etc/letsencrypt/live/{CERTS-DIR}/privkey.pem {USER}@{VMWARE-ADDRESS}:/etc/vmware/ssl/rui.key
+ssh {USER}@{VMWARE-ADDRESS} "services.sh restart"
+```
