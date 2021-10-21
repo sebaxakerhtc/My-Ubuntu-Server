@@ -1,18 +1,18 @@
 # Read for all but write for me
 
-# install samba
+### install samba
 ```
 sudo apt install samba
 ```
-# backing up old config
+### backing up old config
 ```
 sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.backup
 ```
-# create new config
+### create new config
 ```
 sudo nano /etc/samba/smb.conf
 ```
-# insert code
+### insert code
 ```
 [global]
 workgroup = WORKGROUP
@@ -30,15 +30,15 @@ guest ok = yes
 # hide folder
 veto files = hidenfoldername
 ```
-# create folder
+### create folder
 ```
 sudo mkdir -p /raid10/files
 ```
-# give it to me ;)
+### give it to me ;)
 ```
 sudo chown -R sebaxakerhtc /raid10/files
 ```
-# restart services
+### restart services
 ```
 sudo systemctl restart smbd nmbd
 ```
@@ -63,7 +63,7 @@ force user = mainhero
 
 sudo systemctl restart smbd nmbd
 ```
-# add user for samba only
+### add user for samba only
 ```
 sudo adduser --no-create-home --disabled-password --disabled-login smbuser-1
 sudo smbpasswd -a smbuser-1
