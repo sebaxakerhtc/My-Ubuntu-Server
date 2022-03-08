@@ -21,6 +21,11 @@ map to guest = bad user
 usershare allow guests = yes
 # allow run *.exe files from SMB
 acl allow execute always = True
+# MacOS specific
+vfs objects = fruit streams_xattr
+fruit:model = MacSamba
+fruit:metadata = stream
+ea support = yes
 
 [pcserviceburgas.com]
 path = /raid10/files
@@ -29,6 +34,9 @@ writable = yes
 guest ok = yes
 # hide folder
 veto files = hidenfoldername
+# Time Machine
+vfs objects = fruit streams_xattr
+fruit:time machine = yes
 ```
 ### create folder
 ```
