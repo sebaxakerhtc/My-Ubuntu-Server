@@ -4,7 +4,7 @@
 
 ```
 sudo a2enmod rewrite
-cd /var/www/html/botman_project
+cd /var/www/html/botman
 sudo chown -R $USER:www-data storage
 sudo chown -R $USER:www-data bootstrap/cache
 chmod -R 775 storage
