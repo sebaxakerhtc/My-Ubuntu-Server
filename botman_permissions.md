@@ -11,6 +11,7 @@ chmod -R 775 storage
 chmod -R 775 bootstrap/cache
 ```
 <p> Apache2 config
+        
 ```
 <VirtualHost *:80>
         ServerName bot.example.com
