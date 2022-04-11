@@ -27,7 +27,11 @@ php artisan key:gen
 ```
 # Enjoy!
 
-### Publish your bot
+### Publish your bot with Apache2
+<p> Install apache2
+  
+`sudo apt install apache2`
+
 <p> Copy project to www
   
 `sudo cp -r testbot /var/www/`
@@ -59,3 +63,7 @@ chmod -R 775 bootstrap/cache
         CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
+<p> Reload Apache2
+  
+`sudo systemctl restart apache2`
+  
