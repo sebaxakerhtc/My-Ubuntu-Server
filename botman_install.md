@@ -4,18 +4,21 @@
 ```
 sudo apt update
 sudo apt install -y php curl libapache2-mod-php php-mbstring php-xmlrpc php-soap php-gd php-xml php-cli php-zip php-bcmath php-tokenizer php-json php-pear php-curl php-dom
+
 ```
 ### Install composer
 ```
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 sudo chmod +x /usr/local/bin/composer
+
 ```
 ### Install botman
 ```
 composer global require "botman/installer"
 echo 'export PATH="$PATH:$HOME/.config/composer/vendor/bin"' >> ~/.bashrc
 source ~/.bashrc
+
 ```
 ### Create project
 ```
@@ -24,21 +27,31 @@ cd testbot
 composer up
 cp .env.example .env
 php artisan key:gen
+
 ```
 # Enjoy!
 
 ### Publish your bot with Apache2
 <p> Install apache2
   
-`sudo apt install apache2`
+```
+sudo apt install apache2
+
+```
 
 <p> Copy project to www
   
-`sudo cp -r testbot /var/www/`
+```
+sudo cp -r testbot /var/www/
+
+```
 
 <p> Enable rwrite mod
   
-`sudo a2enmod rewrite`
+```
+sudo a2enmod rewrite
+
+```
   
 <p> Resolve privilegies
   
@@ -48,6 +61,7 @@ sudo chown -R $USER:www-data storage
 sudo chown -R $USER:www-data bootstrap/cache
 chmod -R 775 storage
 chmod -R 775 bootstrap/cache
+
 ```
 <p> Apache2 config
         
@@ -65,5 +79,8 @@ chmod -R 775 bootstrap/cache
 ```
 <p> Reload Apache2
   
-`sudo systemctl restart apache2`
+```
+sudo systemctl restart apache2
+
+```
   
