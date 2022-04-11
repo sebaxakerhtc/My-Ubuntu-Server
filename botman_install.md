@@ -24,5 +24,36 @@ cd testbot
 composer up
 cp .env.example .env
 php artisan key:gen
-php artisan serve
+```
+# Enjoy!
+
+### Publish your bot
+<p> Copy project to www
+`sudo cp -r testbot /var/www/`
+
+<p> Enable rwrite mod
+`sudo a2enmod rewrite`
+  
+<p> Resolve privilegies
+  
+```
+cd /var/www/html/testbot
+sudo chown -R $USER:www-data storage
+sudo chown -R $USER:www-data bootstrap/cache
+chmod -R 775 storage
+chmod -R 775 bootstrap/cache
+```
+<p> Apache2 config
+        
+```
+<VirtualHost *:80>
+        ServerName bot.example.com
+        ServerAdmin admin@example.com
+        DocumentRoot /var/www/html/testbot/public
+        <Directory /var/www/html/testbot>
+            AllowOverride All
+        </Directory>
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
 ```
