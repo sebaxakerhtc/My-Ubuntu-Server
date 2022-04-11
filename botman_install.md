@@ -3,7 +3,7 @@
 ### Install necessary packages
 ```
 sudo apt update
-sudo apt install -y php curl libapache2-mod-php php-mbstring php-xmlrpc php-soap php-gd php-xml php-cli php-zip php-bcmath php-tokenizer php-json php-pear php-curl
+sudo apt install -y php curl libapache2-mod-php php-mbstring php-xmlrpc php-soap php-gd php-xml php-cli php-zip php-bcmath php-tokenizer php-json php-pear php-curl php-dom
 ```
 ### Install composer
 ```
