@@ -42,7 +42,7 @@ sudo apt install apache2
 <p> Copy project to www
   
 ```
-sudo cp -r testbot /var/www/
+sudo cp -r testbot /var/www/html/
 
 ```
 
