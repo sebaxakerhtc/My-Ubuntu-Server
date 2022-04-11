@@ -4,7 +4,7 @@
 
 ```
 sudo a2enmod rewrite
-cd /var/www/html/botman
+cd /var/www/html/testbot
 sudo chown -R $USER:www-data storage
 sudo chown -R $USER:www-data bootstrap/cache
 chmod -R 775 storage
@@ -16,8 +16,8 @@ chmod -R 775 bootstrap/cache
 <VirtualHost *:80>
         ServerName bot.example.com
         ServerAdmin admin@example.com
-        DocumentRoot /var/www/html/botman/public
-        <Directory /var/www/html/botman>
+        DocumentRoot /var/www/html/testbot/public
+        <Directory /var/www/html/testbot>
             AllowOverride All
         </Directory>
         ErrorLog ${APACHE_LOG_DIR}/error.log
