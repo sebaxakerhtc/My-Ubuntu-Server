@@ -29,9 +29,11 @@ php artisan key:gen
 
 ### Publish your bot
 <p> Copy project to www
+  
 `sudo cp -r testbot /var/www/`
 
 <p> Enable rwrite mod
+  
 `sudo a2enmod rewrite`
   
 <p> Resolve privilegies
