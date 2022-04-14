@@ -25,6 +25,11 @@ source ~/.bashrc
 botman new testbot
 cd testbot
 composer up
+
+```
+
+### Creating Env and Key
+```
 cp .env.example .env
 php artisan key:gen
 
