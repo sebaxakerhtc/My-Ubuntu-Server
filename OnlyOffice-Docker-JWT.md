@@ -20,4 +20,9 @@ JWT_SECRET=${JWT_SECRET:-$(echo MyStrongSecret)}
 ```
 where MyStrongSecret - is your own secret
 
+Restart the services
+```
+docker exec [container] supervisorctl restart all
+```
+
 # Enjoy!
