@@ -1,28 +1,8 @@
-Sooooo....
-Every restart of server/Docker container it gives me a new JWT_secret.
-I DON'T NEED IT!
+### Nextcloud VM
+```
+docker stop onlyoffice
 
-After docker inspec we have start script `/app/ds/run-document-server.sh`
-So, let's stop this stupid action of generation secret with every start/restart
+docker system prune -a
 
-We need to edit this script
+docker run -i -t -d -p 127.0.0.3:9090:80 -e JWT_ENABLED=true -e JWT_HEADER=AuthorizationJwt -e JWT_SECRET="MyStrongPassword" --restart always --name onlyoffice onlyoffice/documentserver
 ```
-docker exec -it [container] nano /app/ds/run-document-server.sh
-```
-
-Find
-```
-JWT_SECRET=${JWT_SECRET:-$(pwgen -s 20)}
-```
-and replace it with
-```
-JWT_SECRET=${JWT_SECRET:-$(echo MyStrongSecret)}
-```
-where MyStrongSecret - is your own secret
-
-Restart the services
-```
-docker exec [container] supervisorctl restart all
-```
-
-# Enjoy!
